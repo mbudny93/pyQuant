@@ -3,6 +3,7 @@ import sys;
 import lxml.html
 import datetime
 import requests
+from dataVendor import DataVendor
 
 # DROP USER admin@localhost;
 # CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
@@ -132,19 +133,14 @@ def fetchTickersFromDB(con, dbname, symbol_table_name):
         tickerz.append(tck[0])
     return tickerz
 
-def fetchDataFromVendor(ticker):
-    return True
-
-def insertDataIntoDB(data):
-    return True
-
 ############################################################################################
 
 def firstFetch(tickerzFromDB):
+    dataVendor = DataVendor()
     for ticker in tickerzFromDB:
         print(ticker)
-        data = fetchDataFromVendor(ticker)
-        insertDataIntoDB(data)
+        data =  dataVendor.fetchDataFromVendor(ticker)
+        # insertDataIntoDB(data)
 
 ############################################################################################
 
