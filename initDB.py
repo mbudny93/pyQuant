@@ -139,7 +139,11 @@ def firstFetch(tickerzFromDB):
     dataVendor = DataVendor()
     for ticker in tickerzFromDB:
         print(ticker)
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         data =  dataVendor.fetchDataFromVendor(ticker)
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         # insertDataIntoDB(data)
 
 ############################################################################################
