@@ -3,6 +3,7 @@ import sys;
 import lxml.html
 import datetime
 import requests
+import time
 from dataVendor import DataVendor
 
 # DROP USER admin@localhost;
@@ -135,16 +136,28 @@ def fetchTickersFromDB(con, dbname, symbol_table_name):
 
 ############################################################################################
 
-def firstFetch(tickerzFromDB):
+def insertQuotesIntoDB(con, quotes, dbname, symbol_table_name, price_table_name):
+    for day in quotes:
+        return True
+
+    columns = ''
+    values = []
+    query = ('INSERT INTO %s (%s) VALUES %s')%(price_table_name, columns, values)
+
+    cursor = con.cursor()
+    cursor.execute(query)
+
+def firstFetch(con, tickerzFromDB, dbname, symbol_table_name, price_table_name):
     dataVendor = DataVendor()
     for ticker in tickerzFromDB:
         print(ticker)
+        # time.sleep(1)
 
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        data =  dataVendor.fetchDataFromVendor(ticker)
+        # quotes =  dataVendor.fetchQuotes(dataVendor.quantshare, ticker)
+        # prepocessQuotes(quotes)
+        # insertQuotesIntoDB(con, quotes, dbname, symbol_table_name, price_table_name)
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        # insertDataIntoDB(data)
 
 ############################################################################################
 
@@ -160,6 +173,6 @@ symbol_table, price_table = generateQueries(symbol_table_name, price_table_name)
 createTables(con, symbol_table, price_table)
 insertSymbolsIntoDB(con, tickers, dbname, symbol_table_name, price_table_name)
 tickerzFromDB = fetchTickersFromDB(con, dbname, symbol_table_name)
-firstFetch(tickerzFromDB)
+firstFetch(con, tickerzFromDB, dbname, symbol_table_name, price_table_name)
 
 closeConnection(con)

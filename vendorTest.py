@@ -1,5 +1,5 @@
 from dataVendor import DataVendor
 
 vendor = DataVendor()
-quotes = vendor.fetchQuotes(vendor.tiingo, 'AAPL')
+quotes = vendor.fetchQuotes(vendor.alphavantage, 'AAPL')
 # print(quotes)
