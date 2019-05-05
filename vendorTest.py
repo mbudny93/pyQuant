@@ -1,3 +1,5 @@
 from dataVendor import DataVendor
+
 vendor = DataVendor()
-dir(vendor)
+quotes = vendor.fetchQuotes(vendor.tiingo, 'AAPL')
+# print(quotes)

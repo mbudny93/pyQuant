@@ -1,50 +1,56 @@
 import pandas
-import pandas_datareader as pdr
+import pandas_datareader
 import os
 
 class DataVendor:
-    def _init_(self):
-        alphavantage_api_key = os.environ['ALPHAVANTAGE_API_KEY']
-        tiingo_api_key = os.environ['TIINGO_API_KEY']
 
-    def fetchQuotesFromVendor(self, ticker):
-        return True
+    def __init__(self):
+        self.alphavantage_api_key = os.environ['ALPHAVANTAGE_API_KEY']
+        self.tiingo_api_key = os.environ['TIINGO_API_KEY']
 
-    def alphavantage(self, ticker):
-        query = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&\
-        symbol=%s&outputsize=full&apikey=%s&datatype=csv'%(ticker, alphavantage_api_key)
+###########################################################################################
+
+    def fetchQuotes(self, vendor, *ticker):
+        fname = vendor.__name__
+        query = vendor(*ticker)
+        if query:
+            return self.fetchFromPandas(query, fname)
+        else:
+            return self.fetchFromPandasDatareader(*ticker, fname)
+
+    def fetchFromPandas(self, query, fname):
         try:
             quotes = pandas.read_csv(query)
+            print('Data successfully fetched from', fname)
             return quotes
         except:
-            print('Connection to alphavantage failed.')
+            print('Connection with', fname, 'failed.')
             return[]
 
-    def tiingo(self, ticker):
-        query = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&\
-        symbol=%s&outputsize=full&apikey=%s&datatype=csv'%(ticker, tiingo_api_key)
+    def fetchFromPandasDatareader(self, ticker, fname):
         try:
-            quotes = pdr.get_data_tiingo(ticker, tiingo_api_key)
+            quotes = pandas_datareader.get_data_tiingo(ticker, api_key=self.tiingo_api_key)
+            print('Data successfully fetched from', fname)
             return quotes
         except:
-            print('Connection to tiingo failed.')
+            print('Connection with', fname, 'failed.')
             return[]
+
+###########################################################################################
+
+    def alphavantage(self, ticker):
+        query = ('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&'
+        'symbol=%s&outputsize=full&apikey=%s&datatype=csv')%(ticker, self.alphavantage_api_key)
+        return query
+
+    def tiingo(self, ticker):
+        return None
 
     def stooq(self, ticker):
         query = 'https://stooq.com/q/d/l/?s=%s&i=d'%(ticker)
-        try:
-            quotes = pandas.read_csv(query)
-            return quotes
-        except:
-            print('Connection to stooq failed.')
-            return[]
+        return query
 
     def quotemedia(self, ticker):
-        query = 'http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501\
-        &startDay=1&startMonth=1&startYear=2010&&symbol=%s'%(ticker)
-        try:
-            quotes = pandas.read_csv(query)
-            return quotes
-        except:
-            print('Connection to quotemedia failed.')
-            return[]
+        query = ('http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501'
+            '&startDay=1&startMonth=1&startYear=2010&&symbol=%s')%(ticker)
+        return query
