@@ -39,3 +39,12 @@ class DataVendor:
             print('Connection to stooq failed.')
             return[]
 
+    def fetchQuotesFrom_quotemedia(self, ticker):
+        query = 'http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501\
+        &startDay=1&startMonth=1&startYear=2010&&symbol=%s'%(ticker)
+        try:
+            quotes = pandas.read_csv(query)
+            return quotes
+        except:
+            print('Connection to quotemedia failed.')
+            return[]
