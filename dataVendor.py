@@ -10,7 +10,7 @@ class DataVendor:
     def fetchQuotesFromVendor(self, ticker):
         return True
 
-    def fetchQuotesFrom_alphavantage(self, ticker):
+    def alphavantage(self, ticker):
         query = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&\
         symbol=%s&outputsize=full&apikey=%s&datatype=csv'%(ticker, alphavantage_api_key)
         try:
@@ -20,7 +20,7 @@ class DataVendor:
             print('Connection to alphavantage failed.')
             return[]
 
-    def fetchQuotesFrom_tiingo(self, ticker):
+    def tiingo(self, ticker):
         query = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&\
         symbol=%s&outputsize=full&apikey=%s&datatype=csv'%(ticker, tiingo_api_key)
         try:
@@ -30,7 +30,7 @@ class DataVendor:
             print('Connection to tiingo failed.')
             return[]
 
-    def fetchQuotesFrom_stooq(self, ticker):
+    def stooq(self, ticker):
         query = 'https://stooq.com/q/d/l/?s=%s&i=d'%(ticker)
         try:
             quotes = pandas.read_csv(query)
@@ -39,7 +39,7 @@ class DataVendor:
             print('Connection to stooq failed.')
             return[]
 
-    def fetchQuotesFrom_quotemedia(self, ticker):
+    def quotemedia(self, ticker):
         query = 'http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501\
         &startDay=1&startMonth=1&startYear=2010&&symbol=%s'%(ticker)
         try:
