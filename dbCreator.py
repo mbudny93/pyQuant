@@ -4,6 +4,7 @@ import lxml.html
 import datetime
 import requests
 import time
+import pandas
 from dataVendor import DataVendor
 
 # DROP USER admin@localhost;
@@ -23,13 +24,10 @@ def generateQueries(symbol_table_name, price_table_name):
       `id` int NOT NULL AUTO_INCREMENT,\
       `symbol_id` int NOT NULL,\
       `price_date` datetime NOT NULL,\
-      `created_date` datetime NOT NULL,\
-      `last_updated_date` datetime NOT NULL,\
       `open_price` decimal(19,4) NULL,\
       `high_price` decimal(19,4) NULL,\
       `low_price` decimal(19,4) NULL,\
       `close_price` decimal(19,4) NULL,\
-      `adj_close_price` decimal(19,4) NULL,\
       `volume` bigint NULL,\
       PRIMARY KEY (`id`),\
       KEY `index_symbol_id` (`symbol_id`)\
@@ -136,27 +134,66 @@ def fetchTickersFromDB(con, dbname, symbol_table_name):
 
 ############################################################################################
 
-def insertQuotesIntoDB(con, quotes, dbname, symbol_table_name, price_table_name):
-    for day in quotes:
-        return True
+def getPriceTableColumns(connection, quotes, dbname, symbol_table_name, price_table_name):
+    query = ('SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE'
+        '`TABLE_SCHEMA`=\'%s\' AND `TABLE_NAME`=\'%s\';')%(dbname, price_table_name)
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    result = result[2:]
 
     columns = ''
-    values = []
-    query = ('INSERT INTO %s (%s) VALUES %s')%(price_table_name, columns, values)
+    for idx, column in enumerate(result):
+        columns+=column[0]
+        columns+=", "
+    columns = columns[0:-2]
+    return columns
 
-    cursor = con.cursor()
-    cursor.execute(query)
+def tiingoAdapter(day):
+    symbol, date, adjClose, adjHigh, adjLow, adjOpen, adjVolume, close, divCash, high, low, open, splitFactor, volume = day
+    return date, open, high, low, close, volume
 
-def firstFetch(con, tickerzFromDB, dbname, symbol_table_name, price_table_name):
+def alphavantageAdapter(day):
+    timestamp, open, high, low, close, volume = day
+    return timestamp, open, high, low, close, volume
+
+def quotemediaAdapter(day):
+    date, open, high, low, close, volume, changed, changep, adjclose, tradeval, tradevol = day
+    return date, open, high, low, close, volume
+
+def stooqAdapter(day):
+    # STOCK
+    # Date, Open, High, Low, Close, Volume = day
+    # return Date, Open, High, Low, Close, Volume
+
+    # FOREX
+    Date, Open, High, Low, Close = day
+    return Date, Open, High, Low, Close, ''
+
+def insertQuotesIntoDB(connection, quotes, dbname, symbol_table_name, price_table_name):
+    columns = getPriceTableColumns(connection, quotes, dbname, symbol_table_name, price_table_name)
+    preliminary_query = 'INSERT INTO %s (%s) VALUES '%(price_table_name, columns)
+
+    for day in quotes.values:
+        #############################################################
+        #ADAPTER PART
+        # date, open, high, low, close, volume = stooqAdapter(day)
+        date, open, high, low, close, volume = quotemediaAdapter(day)
+        values_query = '%s, %s, %s, %s, %s %s'%(str(date), str(open), str(high), str(low), str(close), str(volume))
+        #############################################################
+        query = preliminary_query + values_query
+        print(query)
+        time.sleep(0.001)
+
+def firstUpdate(con, tickerzFromDB, dbname, symbol_table_name, price_table_name):
     dataVendor = DataVendor()
     for ticker in tickerzFromDB:
         print(ticker)
-        # time.sleep(1)
-
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # quotes =  dataVendor.fetchQuotes(dataVendor.quantshare, ticker)
+        quotes =  dataVendor.fetchQuotes(dataVendor.quotemedia, ticker)
+        # quotes = pandas.read_csv('eurusd_d.csv')
         # prepocessQuotes(quotes)
-        # insertQuotesIntoDB(con, quotes, dbname, symbol_table_name, price_table_name)
+        insertQuotesIntoDB(con, quotes, dbname, symbol_table_name, price_table_name)
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ############################################################################################
@@ -173,6 +210,6 @@ symbol_table, price_table = generateQueries(symbol_table_name, price_table_name)
 createTables(con, symbol_table, price_table)
 insertSymbolsIntoDB(con, tickers, dbname, symbol_table_name, price_table_name)
 tickerzFromDB = fetchTickersFromDB(con, dbname, symbol_table_name)
-firstFetch(con, tickerzFromDB, dbname, symbol_table_name, price_table_name)
+firstUpdate(con, tickerzFromDB, dbname, symbol_table_name, price_table_name)
 
 closeConnection(con)
