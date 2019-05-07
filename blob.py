@@ -172,3 +172,25 @@ def firstUpdate(con, tickerzFromDB, dbname, symbol_table_name, price_table_name,
         insertQuotesIntoDB(con, quotes, dbname, symbol_table_name, price_table_name, dataVendor)
         print(ticker, 'datas inserted.')
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+############################################################################################
+
+dbname = 'test'
+symbol_table_name = 'symbol'
+price_table_name = 'daily_price'
+data_vendor = 'quotemedia'
+
+tickers = getTickers()
+con = establishConnection()
+dropDB(con, dbname)
+createDB(con, dbname)
+symbol_table, price_table = generateQueries(symbol_table_name, price_table_name)
+createTables(con, symbol_table, price_table)
+insertSymbolsIntoDB(con, tickers, dbname, symbol_table_name, price_table_name)
+tickerzFromDB = fetchTickersFromDB(con, dbname, symbol_table_name)
+
+########################################################################################
+firstUpdate(con, tickerzFromDB, dbname, symbol_table_name, price_table_name, data_vendor)
+########################################################################################
+
+closeConnection(con)
