@@ -1,0 +1,8 @@
+
+Data successfully fetched from quotemedia
+FTV data collected. Adding to database...
+Traceback (most recent call last):
+  File "/usr/lib/python3.7/site-packages/pymysql/err.py", line 109, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.InternalError: (1366, "Incorrect decimal value: 'nan' for column `test`.`daily_price`.`open_price` at row 1")
+
