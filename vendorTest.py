@@ -127,7 +127,7 @@ def printColumns(df):
     for col in df.columns:
         print(col)
 
-ticker = 'aapl'
+ticker = 'ftv'
 file = "test.csv"
 vendorName  = sys.argv[1]
 
@@ -135,7 +135,7 @@ vendorName  = sys.argv[1]
 vendor = DataVendor(vendorName)
 query = vendor.fetchQuotes(ticker)
 
-# writeToCsv(file, query)
+writeToCsv(file, query)
 # readFromCsv(file)
 
 print('newest data in ohlcv format: ', vendor.adapt(query.values[0]))

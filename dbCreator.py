@@ -160,13 +160,13 @@ def insertQuotesIntoDB(connection, quotes, dbname, symbol_table_name, price_tabl
         cursor.execute(query)
         # print(query)
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        time.sleep(0.001)
     connection.commit()
 
 def firstUpdate(con, tickerzFromDB, dbname, symbol_table_name, price_table_name, vendorName):
     dataVendor = DataVendor(vendorName)
     for ticker in tickerzFromDB:
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        print('Fetching', ticker, 'historical quotes from', dataVendor.getVendorName(), 'database...')
         quotes = dataVendor.fetchQuotes(ticker)
         print(ticker, 'data collected. Adding to database...')
         insertQuotesIntoDB(con, quotes, dbname, symbol_table_name, price_table_name, dataVendor)
