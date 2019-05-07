@@ -121,6 +121,7 @@ def writeToCsv(file, quotes):
 
 def readFromCsv(file):
     quotes = pandas.read_csv(file)
+    quotes = quotes.dropna()
     print(quotes)
 
 def printColumns(df):
@@ -135,8 +136,8 @@ vendorName  = sys.argv[1]
 vendor = DataVendor(vendorName)
 query = vendor.fetchQuotes(ticker)
 
-writeToCsv(file, query)
-# readFromCsv(file)
+# writeToCsv(file, query)
+readFromCsv(file)
 
 print('newest data in ohlcv format: ', vendor.adapt(query.values[0]))
 print('oldest data in ohlcv format: ', vendor.adapt(query.values[-1]))

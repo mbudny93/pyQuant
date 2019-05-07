@@ -130,8 +130,6 @@ def fetchTickersFromDB(con, dbname, symbol_table_name):
         tickerz.append(tck[0])
     return tickerz
 
-############################################################################################
-
 def getPriceTableColumns(connection, quotes, dbname, symbol_table_name, price_table_name):
     query = ('SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE'
         '`TABLE_SCHEMA`=\'%s\' AND `TABLE_NAME`=\'%s\';')%(dbname, price_table_name)
@@ -146,6 +144,8 @@ def getPriceTableColumns(connection, quotes, dbname, symbol_table_name, price_ta
         columns+=", "
     columns = columns[0:-2]
     return columns
+
+############################################################################################
 
 def insertQuotesIntoDB(connection, quotes, dbname, symbol_table_name, price_table_name, vendor):
     cursor = connection.cursor()
@@ -168,7 +168,12 @@ def firstUpdate(con, tickerzFromDB, dbname, symbol_table_name, price_table_name,
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         print('Fetching', ticker, 'historical quotes from', dataVendor.getVendorName(), 'database...')
         quotes = dataVendor.fetchQuotes(ticker)
-        print(ticker, 'data collected. Adding to database...')
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # VALIDATE QUOTES BEFORE INSERTING TO DATABASE
+        print(ticker, 'data collected. Validating dataset...')
+        quotes = quotes.dropna()
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        print(ticker, 'data validated. Adding to database...')
         insertQuotesIntoDB(con, quotes, dbname, symbol_table_name, price_table_name, dataVendor)
         print(ticker, 'datas inserted.')
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

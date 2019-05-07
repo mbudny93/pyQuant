@@ -3,21 +3,39 @@ import pandas
 from dbCreator import *
 from dataVendor import DataVendor, AlphaVantage, Quotemedia, Tiingo, Stooq
 import sys
+import math
+
+def validate(tupleOfQuotes):
+    cond = False
+    for x in tupleOfQuotes:
+        if x!=x:
+            cond = True
+    if cond:
+        print('PRZYPAL')
+    else:
+        print('OK')
+
+    return tupleOfQuotes
 
 def debugz(connection, quotes, dbname, symbol_table_name, price_table_name, vendor):
     cursor = connection.cursor()
     columns = getPriceTableColumns(connection, quotes, dbname, symbol_table_name, price_table_name)
     preliminary_query = 'INSERT INTO %s (%s) VALUES '%(price_table_name, columns)
+    quotes = quotes.dropna()
 
     for day in quotes.values:
-        d, o, h, l, c, v = vendor.adapt(day)
+        # d, o, h, l, c, v = vendor.adapt(day)
+        dohlcv = vendor.adapt(day)
+        # validate values
+        d, o, h, l, c, v = validate(dohlcv)
+        # validate values
         values_query = '(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', \'%s\')'%(str(d), str(o), str(h), str(l), str(c), str(v))
         query = preliminary_query + values_query
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        print(query)
+        # print(query)
         cursor.execute(query)
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    connection.commit()
+    # connection.commit()
 
 def debug(ticker):
     dbname = 'test'
