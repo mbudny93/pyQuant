@@ -3,6 +3,7 @@ from query import Query
 class DataInserter:
     def __init__(self, database):
         self.database = database
+
     def insertSymbols(self):
         connection = self.database.connection
         cursor = connection.cursor()

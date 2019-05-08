@@ -49,12 +49,19 @@ class DataVendor:
         fname = self.getVendorName()
         query = self.getQuery(ticker)
         if query:
-            return self.fetchFromPandas(query, fname)
+            datas = self.fetchFromPandas(query, fname)
+            print(ticker, 'data collected. Validating dataset...')
+            return self.validateDataset(datas)
         else:
-            return self.fetchFromPandasDatareader(ticker, fname)
+            datas = self.fetchFromPandasDatareader(ticker, fname)
+            print(ticker, 'data collected. Validating dataset...')
+            return self.validateDataset(datas)
 
     def adapt(self, day):
         return self.getVendor().adapt(day)
+
+    def validateDataset(self, datas):
+        return self.getVendor().validateDataset(datas)
 
 ###########################################################################################
 
@@ -71,6 +78,10 @@ class AlphaVantage:
         timestamp, open, high, low, close, volume = day
         return timestamp, open, high, low, close, volume
 
+    def validateDataset(self, datas):
+        datas = datas.dropna()
+        return datas
+
 class Tiingo:
     def __init__(self, api_key):
         self.tiingo_api_key = api_key
@@ -82,6 +93,10 @@ class Tiingo:
     def adapt(self, day):
         symbol, date, adjClose, adjHigh, adjLow, adjOpen, adjVolume, close, divCash, high, low, open, splitFactor, volume = day
         return date, open, high, low, close, volume
+
+    def validateDataset(self, datas):
+        datas = datas.dropna()
+        return datas
 
 class Stooq:
     def __init__(self):
@@ -100,6 +115,10 @@ class Stooq:
         Date, Open, High, Low, Close = day
         return Date, Open, High, Low, Close, ''
 
+    def validateDataset(self, datas):
+        datas = datas.dropna()
+        return datas
+
 class Quotemedia:
     def __init__(self):
         return None
@@ -112,3 +131,7 @@ class Quotemedia:
     def adapt(self, day):
         date, open, high, low, close, volume, changed, changep, adjclose, tradeval, tradevol = day
         return date, open, high, low, close, volume
+
+    def validateDataset(self, datas):
+        datas = datas.dropna()
+        return datas
