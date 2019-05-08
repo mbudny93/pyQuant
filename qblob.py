@@ -59,8 +59,6 @@ class Database:
         self.tickers = tuples
 
     def getTickersList(self):
-        # for idx, tuple in enumerate(self.tickers):
-            # print(idx, tuple)
         return self.tickers
 
     def getTickersFromDB(self):
