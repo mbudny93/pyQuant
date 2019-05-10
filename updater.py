@@ -9,8 +9,8 @@ class Updater:
         print('There we go...')
         tickerz = self.db_inserter.database.getTickersFromDB()
         for ticker in tickerz:
-            print('Fetching', ticker, 'historical quotes from', self.dataVendor.getVendorName(), 'database...')
-            quotes = self.dataVendor.fetchQuotes(ticker)
-            print(ticker, 'data validated. Adding to database...')
-            self.db_inserter.insertQuotes(self.dataVendor, quotes)
-            print(ticker, 'datas inserted.')
+            print('Fetching', ticker[1], 'historical quotes from', self.dataVendor.getVendorName(), 'database...')
+            quotes = self.dataVendor.fetchQuotes(ticker[1])
+            print(ticker[1], 'data validated. Adding to database...')
+            self.db_inserter.insertQuotes(self.dataVendor, ticker[0], quotes)
+            print(ticker[1], 'datas inserted.')

@@ -17,7 +17,7 @@ class DataInserter:
             print('Adding', symbol[1], '...')
         print('Database succesfully created.')
 
-    def insertQuotes(self, vendor, quotes):
+    def insertQuotes(self, vendor, ticker_id, quotes):
         connection = self.database.connection
         cursor = connection.cursor()
         columns = self.database.getTableColumnNamesFormatted(self.database.price_table_name)
@@ -26,7 +26,7 @@ class DataInserter:
 
         for day in quotes.values:
             d, o, h, l, c, v = vendor.adapt(day)
-            values_query = '(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', \'%s\')'%(str(d), str(o), str(h), str(l), str(c), str(v))
+            values_query = '(\'%s\',\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')'%(str(ticker_id), str(d), str(o), str(h), str(l), str(c), str(v))
             query = preliminary_query + values_query
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             cursor.execute(query)

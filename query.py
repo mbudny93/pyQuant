@@ -26,6 +26,7 @@ class Query:
 
         price_table = "CREATE TABLE `%s` (\
           `id` int NOT NULL AUTO_INCREMENT,\
+          `symbol_id` int NOT NULL,\
           `price_date` datetime NOT NULL,\
           `open_price` decimal(19,4) NULL,\
           `high_price` decimal(19,4) NULL,\
@@ -47,9 +48,35 @@ class Query:
         return query
 
     def getTickers(self, symbol_table_name):
-        query = 'SELECT ticker FROM %s'%(symbol_table_name)
+        query = 'SELECT id, ticker FROM %s'%(symbol_table_name)
         return query
 
     def insertQuotes(self, price_table_name, columns):
         query = 'INSERT INTO %s (%s) VALUES '%(price_table_name, columns)
         return query
+
+    def getQuotes(self, ticker, symbol_table_name, price_table_name):
+        query = ('SELECT %s.price_date,'
+                 '%s.open_price,'
+                 '%s.high_price,'
+                 '%s.low_price,'
+                 '%s.close_price,'
+                 '%s.volume '
+                 'FROM %s INNER JOIN %s ON '
+                 '%s.symbol_id = %s.id '
+                 'WHERE %s.ticker = \'%s\' '
+                 'ORDER BY %s.price_date ASC;'
+                 '')%(price_table_name,
+                      price_table_name,
+                      price_table_name,
+                      price_table_name,
+                      price_table_name,
+                      price_table_name,
+                      symbol_table_name,
+                      price_table_name,
+                      price_table_name,
+                      symbol_table_name,
+                      symbol_table_name,
+                      ticker, price_table_name);
+        return query
+

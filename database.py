@@ -1,7 +1,9 @@
 from query import Query
 
 import datetime
+import time
 import pymysql
+import pandas.io.sql as psql
 import requests
 import lxml.html
 
@@ -10,21 +12,26 @@ class Database:
         self.connection = connection
         self.cursor = connection.cursor()
         self.db_name = db_name
-        # remove if exists
-        self.dropDatabase()
+
+    def createDatabase(self):
         # create database
-        self.cursor.execute(Query(self.connection).createDatabase(db_name))
+        self.cursor.execute(Query(self.connection).createDatabase(self.db_name))
         # use database
-        self.cursor.execute(Query(self.connection).useDatabase(db_name))
+        self.cursor.execute(Query(self.connection).useDatabase(self.db_name))
         print('Database', self.db_name, 'succesfully created')
 
     def dropDatabase(self):
+        # remove if exists
         query = Query(self.connection).dropDatabase(self.db_name)
         try:
             self.cursor.execute(query)
             print('Database', self.db_name, 'succesfully deleted')
         except:
             pass
+
+    def connectToDatabase(self):
+        self.cursor.execute(Query(self.connection).useDatabase(self.db_name))
+        print('Successfully connected to database:', self.db_name)
 
     def createTables(self, symbol_table_name, price_table_name):
         self.symbol_table_name = symbol_table_name
@@ -64,8 +71,8 @@ class Database:
         result = self.cursor.fetchall()
 
         tickerz = []
-        for idx, tck in enumerate(result):
-            tickerz.append(tck[0])
+        for tck in result:
+            tickerz.append(tck)
         return tickerz
 
     def getTableColumnNames(self, table_name):
@@ -86,3 +93,12 @@ class Database:
             columns+=", "
         columns = columns[0:-2]
         return columns
+
+    def getQuotes(self, ticker, symbol_table_name, price_table_name):
+        start = time. time()
+        query = Query(self.connection).getQuotes(ticker, symbol_table_name, price_table_name)
+        # print(query)
+        result = psql.read_sql(query, con=self.connection)
+        end = time. time()
+        print("Fetching from DB completed in", end-start, "seconds")
+        return result
