@@ -95,10 +95,31 @@ class Database:
         return columns
 
     def getQuotes(self, ticker, symbol_table_name, price_table_name):
-        start = time. time()
+        start = time.time()
         query = Query(self.connection).getQuotes(ticker, symbol_table_name, price_table_name)
         # print(query)
         result = psql.read_sql(query, con=self.connection)
         end = time. time()
         print("Fetching from DB completed in", end-start, "seconds")
         return result
+
+    def getLastQuote(self, ticker, symbol_table_name, price_table_name):
+        start = time.time()
+        query = Query(self.connection).getLastQuote(ticker, symbol_table_name, price_table_name)
+        # print(query)
+        result = psql.read_sql(query, con=self.connection)
+        end = time. time()
+        print("Fetching from DB completed in", end-start, "seconds")
+        return result
+
+    def getLastQuoteDate(self, ticker, symbol_table_name, price_table_name):
+        start = time.time()
+        query = Query(self.connection).getLastQuote(ticker, symbol_table_name, price_table_name)
+        # print(query)
+        result = psql.read_sql(query, con=self.connection)
+        end = time. time()
+        print("Fetching from DB completed in", end-start, "seconds")
+        return result['price_date']
+
+
+

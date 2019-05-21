@@ -80,3 +80,28 @@ class Query:
                       ticker, price_table_name);
         return query
 
+    def getLastQuote(self, ticker, symbol_table_name, price_table_name):
+        query = ('SELECT %s.price_date,'
+                 '%s.open_price,'
+                 '%s.high_price,'
+                 '%s.low_price,'
+                 '%s.close_price,'
+                 '%s.volume '
+                 'FROM %s INNER JOIN %s ON '
+                 '%s.symbol_id = %s.id '
+                 'WHERE %s.ticker = \'%s\' '
+                 'ORDER BY %s.price_date ASC '
+                 'LIMIT 1;'
+                 '')%(price_table_name,
+                      price_table_name,
+                      price_table_name,
+                      price_table_name,
+                      price_table_name,
+                      price_table_name,
+                      symbol_table_name,
+                      price_table_name,
+                      price_table_name,
+                      symbol_table_name,
+                      symbol_table_name,
+                      ticker, price_table_name);
+        return query

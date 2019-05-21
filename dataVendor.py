@@ -40,7 +40,7 @@ class DataVendor:
             print('Connection with', fname, 'failed.')
             return[]
 
-    def fetchQuotes(self, ticker):
+    def fetchHistoricalQuotes(self, ticker):
         fname = self.getVendorName()
         query = self.getQuery(ticker)
         if query:
@@ -119,6 +119,11 @@ class Quotemedia:
     def getQuery(self, ticker):
         query = ('http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501'
             '&startDay=1&startMonth=1&startYear=2010&&symbol=%s')%(ticker)
+        return query
+
+    def getQuery(self, ticker, day, month, year):
+        query = ('http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501'
+            '&startDay=%s&startMonth=%s&startYear=%s&&symbol=%s')%(day, month, year, ticker)
         return query
 
     def adapt(self, day):
