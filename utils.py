@@ -8,24 +8,27 @@ import sys
 
 class Utils:
     def __init__(self):
-        return None
+        self.connection = pymysql.connect(host='localhost', user='admin', password='admin')
+        self.dbname = 'test'
+        self.symbol_table_name = 'symbol'
+        self.price_table_name = 'daily_price'
+        self.db = Database(self.connection, self.dbname)
+        self.db.connectToDatabase()
+
     def convertTimestampToStrings(self, timestamp):
         return timestamp.day, timestamp.month, timestamp.year
 
+    def getLastQuote(self, ticker):
+        series = self.db.getLastQuoteDate(ticker, self.symbol_table_name, self.price_table_name)
+        timestamp = series[0]
+        day, month, year = self.convertTimestampToStrings(timestamp)
+        query = Quotemedia().getQuery(ticker, day, month, year)
+        print(query)
+
 
 ticker=sys.argv[1].upper()
-connection = pymysql.connect(host='localhost', user='admin', password='admin')
-##############################################################################
-dbname = 'test'
-symbol_table_name = 'symbol'
-price_table_name = 'daily_price'
-##############################################################################
-db = Database(connection, dbname)
-db.connectToDatabase()
-series = db.getLastQuoteDate(ticker, symbol_table_name, price_table_name)
-timestamp = series[0]
-day, month, year = Utils().convertTimestampToStrings(timestamp)
-query = Quotemedia().getQuery(ticker, day, month, year)
-print(query)
+utils = Utils()
+utils.getLastQuote(ticker)
+
 
 
