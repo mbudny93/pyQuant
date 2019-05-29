@@ -24,6 +24,9 @@ class DataVendor:
     def getQuery(self, ticker):
         return self.getVendor().getQuery(ticker)
 
+    def getQuery(self, ticker, day, month, year):
+        return self.getVendor().getQuery(ticker, day, month, year)
+
     def fetchFromPandas(self, query, fname):
         try:
             quotes = pandas.read_csv(query)
@@ -43,6 +46,18 @@ class DataVendor:
     def fetchHistoricalQuotes(self, ticker):
         fname = self.getVendorName()
         query = self.getQuery(ticker)
+        if query:
+            datas = self.fetchFromPandas(query, fname)
+            print(ticker, 'data collected. Validating dataset...')
+            return self.validateDataset(datas)
+        else:
+            datas = self.fetchFromPandasDatareader(ticker, fname)
+            print(ticker, 'data collected. Validating dataset...')
+            return self.validateDataset(datas)
+
+    def fetchQuotes(self, ticker, day, month, year):
+        fname = self.getVendorName()
+        query = self.getQuery(ticker, day, month, year)
         if query:
             datas = self.fetchFromPandas(query, fname)
             print(ticker, 'data collected. Validating dataset...')
@@ -122,8 +137,14 @@ class Quotemedia:
         return query
 
     def getQuery(self, ticker, day, month, year):
+        # query = ('http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501'
+            # '&startDay=%s&startMonth=%s&startYear=%s&endDay=20&endMonth=5&endYear=2019&isRanged=true&symbol=%s')%(day, month, year, ticker)
+        ####################TESTXXX
+        month -= 1
+        if month < 1 :
+            month = 12
         query = ('http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501'
-            '&startDay=%s&startMonth=%s&startYear=%s&&symbol=%s')%(day, month, year, ticker)
+            '&startDay=%s&startMonth=%s&startYear=%s&isRanged=true&symbol=%s')%(day, month, year, ticker)
         return query
 
     def adapt(self, day):

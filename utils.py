@@ -18,17 +18,31 @@ class Utils:
     def convertTimestampToStrings(self, timestamp):
         return timestamp.day, timestamp.month, timestamp.year
 
-    def getLastQuote(self, ticker):
-        series = self.db.getLastQuoteDate(ticker, self.symbol_table_name, self.price_table_name)
+    def getQuotesFromVendor(self):
+        pass
+
+    def getQuotesFromDB(self):
+        pass
+
+    def getLastQuoteFromDB(self, ticker, order = 'DESC'):
+        series = self.db.getLastQuoteDate(ticker, self.symbol_table_name, self.price_table_name, order)
         timestamp = series[0]
         day, month, year = self.convertTimestampToStrings(timestamp)
         query = Quotemedia().getQuery(ticker, day, month, year)
         print(query)
+        vendor = DataVendor('quotemedia')
+        quotes = vendor.fetchQuotes(ticker, day, month, year)
+        print(quotes)
 
 
-ticker=sys.argv[1].upper()
+default_ticker = 'AAPL'
+if len(sys.argv) is 1:
+    ticker = default_ticker
+else:
+    ticker=sys.argv[1].upper()
+
 utils = Utils()
-utils.getLastQuote(ticker)
+utils.getLastQuoteFromDB(ticker)
 
 
 

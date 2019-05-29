@@ -112,9 +112,9 @@ class Database:
         print("Fetching from DB completed in", end-start, "seconds")
         return result
 
-    def getLastQuoteDate(self, ticker, symbol_table_name, price_table_name):
+    def getLastQuoteDate(self, ticker, symbol_table_name, price_table_name, order):
         start = time.time()
-        query = Query(self.connection).getLastQuote(ticker, symbol_table_name, price_table_name)
+        query = Query(self.connection).getLastQuote(ticker, symbol_table_name, price_table_name, order)
         # print(query)
         result = psql.read_sql(query, con=self.connection)
         end = time. time()
