@@ -180,8 +180,10 @@ class DataInserter:
 
 class DataVendor:
     def __init__(self, vendorName):
-        self.alphavantage_api_key = os.environ['ALPHAVANTAGE_API_KEY']
-        self.tiingo_api_key = os.environ['TIINGO_API_KEY']
+        #self.alphavantage_api_key = os.environ['ALPHAVANTAGE_API_KEY']
+        self.alphavantage_api_key = "null"
+        #self.tiingo_api_key = os.environ['TIINGO_API_KEY']
+        self.tiingo_api_key = "null"
         self.vendors = {}
 
         self.vendors['alphavantage'] = AlphaVantage(self.alphavantage_api_key)

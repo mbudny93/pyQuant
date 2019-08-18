@@ -1,0 +1,21 @@
+requirements:
+
+Python 3.6.8
+pandas==0.25.0
+PyMySQL==0.9.3
+lxml=4.4.1
+pandas-datareader==0.7.4
+matplotlib==3.1.1
+
+install db:
+
+sudo apt-get remove mariadb*
+sudo apt-get install mariadb-server -y
+sudo mysql_secure_installation
+sudo mysql -u root
+
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
+GRANT USAGE ON *.* TO 'admin'@'localhost' IDENTIFIED BY 'admin';
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'admin'@localhost;
