@@ -6,6 +6,30 @@ import pymysql
 import pandas.io.sql as psql
 import requests
 import lxml.html
+import sys
+
+class DbConnectionWrapper:
+    def __init__(self):
+        self.connection, self.cursor = self.connectLocalHost()
+
+    def connectLocalHost(self):
+        try:
+            start = time.time()
+            connection = pymysql.connect(host='localhost', user='admin', password='admin')
+            end = time.time()
+            print('Succesfully connected to localDb in', end-start, 'seconds.')
+            return ( connection, connection.cursor() )
+        except:
+            sys.exit('FATAL ERROR: Unable to connect to localDb')
+
+    def connectToDatabase(self, dbName):
+        try:
+            start = time.time()
+            self.cursor.execute(Query(self.connection).useDatabase(dbName))
+            end = time.time()
+            print('Successfully connected to database:', dbName, 'in', end-start, 'seconds')
+        except:
+            sys.exit('FATAL ERROR: Unable to connect to database', dbName)
 
 class Database:
     def __init__(self, connection, db_name):
@@ -121,5 +145,7 @@ class Database:
         print("Fetching from DB completed in", end-start, "seconds")
         return result['price_date']
 
-
+cursor = DbConnectionWrapper().cursor
+print(cursor)
+# DbConnectionWrapper().connectToDatabase('test')
 
