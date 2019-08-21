@@ -1,21 +1,30 @@
 
 class Query:
-    def __init__(self, connection):
-        self.connection = connection
+    def __init__(self):
+        pass
 
-    def createDatabase(self, dbname):
+    @staticmethod
+    def checkIfDatabaseExists(dbname):
+        query = 'show databases like \'%s\';'%(dbname)
+        return query
+
+    @staticmethod
+    def createDatabase(dbname):
         query = 'create database %s;'%(dbname)
         return query
 
-    def useDatabase(self, dbname):
+    @staticmethod
+    def useDatabase(dbname):
         query = 'use %s;'%(dbname)
         return query
 
-    def dropDatabase(self, dbname):
+    @staticmethod
+    def dropDatabase(dbname):
         query = 'drop database %s;'%(dbname)
         return query
 
-    def createTables(self, symbol_table_name, price_table_name):
+    @staticmethod
+    def createTables(symbol_table_name, price_table_name):
         symbol_table = "CREATE TABLE `%s` (\
           `id` int NOT NULL AUTO_INCREMENT,\
           `ticker` varchar(32) NOT NULL,\
@@ -38,24 +47,29 @@ class Query:
 
         return symbol_table, price_table
 
-    def getTableColumnNames(self, db_name, table_name):
+    @staticmethod
+    def getTableColumnNames(db_name, table_name):
         query = ('SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE'
             '`TABLE_SCHEMA`=\'%s\' AND `TABLE_NAME`=\'%s\';')%(db_name, table_name)
         return query
 
-    def insertSymbols(self, symbol_table_name, columns, values):
+    @staticmethod
+    def insertSymbols(symbol_table_name, columns, values):
         query = 'INSERT INTO %s (%s) VALUES %s'%(symbol_table_name, columns, values)
         return query
 
-    def getTickers(self, symbol_table_name):
+    @staticmethod
+    def getTickers(symbol_table_name):
         query = 'SELECT id, ticker FROM %s'%(symbol_table_name)
         return query
 
-    def insertQuotes(self, price_table_name, columns):
+    @staticmethod
+    def insertQuotes(price_table_name, columns):
         query = 'INSERT INTO %s (%s) VALUES '%(price_table_name, columns)
         return query
 
-    def getQuotes(self, ticker, symbol_table_name, price_table_name):
+    @staticmethod
+    def getQuotes(ticker, symbol_table_name, price_table_name):
         query = ('SELECT %s.price_date,'
                  '%s.open_price,'
                  '%s.high_price,'
@@ -80,7 +94,8 @@ class Query:
                       ticker, price_table_name);
         return query
 
-    def getLastQuote(self, ticker, symbol_table_name, price_table_name, order):
+    @staticmethod
+    def getLastQuote(ticker, symbol_table_name, price_table_name, order):
         query = ('SELECT %s.price_date,'
                  '%s.open_price,'
                  '%s.high_price,'
