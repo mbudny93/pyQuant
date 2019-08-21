@@ -1,5 +1,4 @@
-from dbSupervisor import DbSupervisor
-from blob import Database, Dataset, US500, Forex
+from blob import *
 
 DbSupervisor.establishConnection()
 

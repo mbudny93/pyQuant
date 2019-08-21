@@ -1,4 +1,3 @@
-from dbSupervisor import DbSupervisor
 from query import Query
 
 import datetime
@@ -7,6 +6,42 @@ import pymysql
 import requests
 import lxml.html
 import sys
+
+class DbSupervisor:
+
+    connection = {}
+
+    @staticmethod
+    def establishConnection():
+        try:
+            start = time.time()
+            connection = pymysql.connect(host='localhost', user='admin', password='admin')
+            end = time.time()
+            print('Succesfully connected to local database in', end-start, 'seconds.')
+            DbSupervisor.connection = connection
+        except:
+            DbSupervisor.connection.close()
+            sys.exit('FATAL ERROR: Unable to connect to local database.')
+
+    @staticmethod
+    def connectToDatabase(dbName):
+        try:
+            with DbSupervisor.connection.cursor() as cursor:
+                start = time.time()
+                DbSupervisor.cursor.execute(Query(DbSupervisor.connection).useDatabase(dbName))
+                end = time.time()
+                print('Successfully connected to database', dbName, 'in', end-start, 'seconds')
+        except:
+            sys.exit('FATAL ERROR: Unable to connect to database', dbName)
+
+    @staticmethod
+    def checkIfDatabaseExists(dbName):
+        try:
+            with DbSupervisor.connection.cursor() as cursor:
+                return cursor.execute(Query.checkIfDatabaseExists(dbName))
+        except:
+            DbSupervisor.connection.close()
+            sys.exit('FATAL ERROR: Unable to perform simple query')
 
 class Database:
 
@@ -141,11 +176,15 @@ class Dataset:
         print("Dataset succesfully created.")
 
     def create(self):
-        self.database = Database(self.name)
-        self.database.createDatabase()
+        pass
+
+    def fetchHistoricalQuotes(self):
+        print('First fetch...')
+        time.sleep(3)
 
     def update(self):
-        pass
+        print('Updating ...')
+        time.sleep(3)
 
     def remove(self):
         self.database.dropDatabase()
@@ -163,30 +202,39 @@ class Dataset:
         pass
 
 class US500(Dataset):
-    def generateTickersList(self):
-        print('Generating tickers for us500...')
-        now = datetime.datetime.utcnow()
-        url = 'http://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
 
+    def generateTickersList(self):
+
+        print('Generating tickers for us500...')
+
+        url = 'http://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+        html = lxml.html.fromstring(self.getUrlContent(url))
+        tuples = self.parseHtml(html)
+
+        print('Symbols succesfully generated')
+
+        self.database.tickers = tuples
+        self.tickers = tuples
+
+    def getUrlContent(self, url):
         try:
             res = requests.get(url)
         except:
             sys.exit('FATAL ERROR: Unable to connect to url ...')
+        return res.content
 
-        html = lxml.html.fromstring(res.content)
-
+    def parseHtml(self, html):
         tickers = html.xpath('//table[1]//td[1]//text()')[0:-1:2]
         securities = html.xpath('//table[1]//td[2]//text()')
         symbols = html.xpath('//table[1]//td[4]//text()')
+
+        now = datetime.datetime.utcnow()
 
         tuples = []
         for tick, comp, sym in zip(tickers, securities, symbols):
             tup = (tick, comp, sym, now)
             tuples.append(tup)
-        print('Symbols succesfully generated')
-
-        self.database.tickers = tuples
-        self.tickers = tuples
+        return tuples
 
 class Forex(Dataset):
     def generateTickersList(self):
