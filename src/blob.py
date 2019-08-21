@@ -1,4 +1,5 @@
 from query import Query
+from vendor import *
 
 import datetime
 import time
@@ -48,7 +49,7 @@ class Updater:
 
 class DbSupervisor:
 
-    connection = {}
+    connection = None
 
     @staticmethod
     def establishConnection():
@@ -88,11 +89,15 @@ class Database:
     symbol_table_name = ''
     price_table_name = ''
     tickers = []
+    dataVendor = None
 
     def __init__(self, db_name):
         self.db_name = db_name
         self.symbol_table_name = 'symbol'
         self.price_table_name = 'daily_price'
+
+    def setVendor(self, vendor):
+        self.dataVendor = vendor
 
     def createDatabase(self):
         with DbSupervisor.connection.cursor() as cursor:
@@ -199,8 +204,8 @@ class Database:
 
     def insertQuotes(self, vendor, ticker_id, quotes):
         with DbSupervisor.connection.cursor() as cursor:
-            columns = self.database.getTableColumnNamesFormatted(self.database.price_table_name)
-            table = self.database.price_table_name
+            columns = self.getTableColumnNamesFormatted(self.price_table_name)
+            table = self.price_table_name
             preliminary_query = Query.insertQuotes(table, columns)
 
             for day in quotes.values:
@@ -211,7 +216,7 @@ class Database:
                 cursor.execute(query)
                 # print(query)
                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            connection.commit()
+            DbSupervisor.connection.commit()
 
     def firstUpdate(self):
         print('There we go...')
@@ -221,44 +226,50 @@ class Database:
             print('Fetching', ticker[1], 'historical quotes from', self.dataVendor.getVendorName(), 'database...')
             quotes = self.dataVendor.fetchHistoricalQuotes(ticker[1])
             print(ticker[1], 'data validated. Adding to database...')
-            self.db_inserter.insertQuotes(self.dataVendor, ticker[0], quotes)
+            self.insertQuotes(self.dataVendor, ticker[0], quotes)
             print(ticker[1], 'datas inserted.')
 
 # abstraction layer over database
 class Dataset:
 
     name = ''
-    vendor = ''
-    database = {}
-    updater = {}
+    database = None
+    updater = None
     tickers = []
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # CREATE
     def __init__(self, name):
         print('Initializing new dataset ...')
         self.name = name
         self.database = Database(self.name)
         self.database.createDatabase()
         self.database.createTables()
+
         self.generateTickersList()
+        self.database.setVendor(self.createVendor())
+
         self.database.insertSymbols()
         print("Dataset succesfully created.")
 
-    def create(self):
-        pass
 
-    def fetchHistoricalQuotes(self):
-        pass
-        # self.database.firstUpdate()
+    def fill(self):
+        self.database.firstUpdate()
 
     def update(self):
         print('Updating ...')
         time.sleep(3)
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def remove(self):
         self.database.dropDatabase()
 
     def getInfo(self):
         pass
+
+    def createVendor(self):
+        raise NotImplementedError()
 
     def generateTickersList(self):
         raise NotImplementedError()
@@ -277,6 +288,9 @@ class US500(Dataset):
 
         self.database.tickers = tickerz
         self.tickers = tickerz
+
+    def createVendor(self):
+        return Quotemedia()
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
