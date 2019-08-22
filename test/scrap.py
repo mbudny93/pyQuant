@@ -2,6 +2,7 @@ import sys
 import requests
 import lxml.html
 
+
 def scrap_djia():
         url = 'https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average'
 
@@ -172,7 +173,7 @@ def scrap_wig20():
 
         tuples = []
         for tick, comp, sec in zip(tickers, security, sector):
-            tup = (tick, comp, sec)
+            tup = (tick.rstrip(), comp.rstrip(), sec.rstrip())
             tuples.append(tup)
         print('Symbols succesfully generated')
 
