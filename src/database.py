@@ -59,7 +59,8 @@ class Database:
             tickers = self.getTickersList()
             for symbol in tickers:
                 values = symbol[0:-1]
-                query = Query.insertSymbols(table, columns, values)
+                # query = Query.insertSymbols(table, columns, values)
+                query = Query.insertSymbols(table, columns, symbol)
                 cursor.execute(query)
                 print('Adding', symbol[1], '...')
             print('Database symbols succesfully inserted.')
