@@ -18,28 +18,33 @@ class Dataset:
     updater = None
     tickers = []
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # CREATE
     def __init__(self, name):
-        print('Initializing new dataset ...')
         self.name = name
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def create(self):
+        print('Initializing new dataset ...')
+
         self.database = Database(self.name)
         self.database.createDatabase()
         self.database.createTables()
 
         self.generateTickersList()
+        self.database.insertSymbols()
         self.database.setVendor(self.createVendor())
 
-        self.database.insertSymbols()
         print("Dataset succesfully created.")
 
-
     def fill(self):
-        self.database.firstUpdate()
+        DbSupervisor.connectToDatabase(self.name)
+        print('First fetch...')
+        time.sleep(2)
+        # self.database.firstUpdate()
 
     def update(self):
+        DbSupervisor.connectToDatabase(self.name)
         print('Updating ...')
-        time.sleep(3)
+        time.sleep(2)
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

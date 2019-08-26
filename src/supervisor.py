@@ -24,7 +24,7 @@ class DbSupervisor:
         try:
             with DbSupervisor.connection.cursor() as cursor:
                 start = time.time()
-                DbSupervisor.cursor.execute(Query(DbSupervisor.connection).useDatabase(dbName))
+                cursor.execute(Query.useDatabase(dbName))
                 end = time.time()
                 print('Successfully connected to database', dbName, 'in', end-start, 'seconds')
         except:

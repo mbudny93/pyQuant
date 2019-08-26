@@ -3,6 +3,15 @@ from supervisor import *
 
 DbSupervisor.establishConnection()
 
-ds1 = US500('spy')
-# ds1.fill()
-# ds1.update()
+datasets = [
+    US500('spy'),
+    DAX30('dax'),
+    FTSE100('ftse'),
+    WIG20('wig')
+]
+
+for ds in datasets:
+    ds.create()
+    ds.fill()
+    ds.update()
+
