@@ -1,6 +1,3 @@
 [
-  "scrap_test.py::test_scrap_us500",
-  "scrap_test.py::test_scrap_dax",
-  "scrap_test.py::test_scrap_ftse100",
-  "scrap_test.py::test_scrap_wig20"
+  "vendor_test.py::test_quotemedia_vendor_connectivity"
 ]
