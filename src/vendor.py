@@ -30,6 +30,8 @@ class Quotemedia(DataVendor):
     def __init__(self):
         self.vendorName = 'Quotemedia'
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     def fetchHistoricalQuotes(self, ticker):
         fname = self.getVendorName()
         query = self.getQuery(ticker)
@@ -48,6 +50,8 @@ class Quotemedia(DataVendor):
         query = ('http://app.quotemedia.com/quotetools/getHistoryDownload.csv?&webmasterId=501'
             '&startDay=1&startMonth=1&startYear=2010&&symbol=%s')%(ticker)
         return query
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def adapt(self, day):
         date, open, high, low, close, volume, changed, changep, adjclose, tradeval, tradevol = day

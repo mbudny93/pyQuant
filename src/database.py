@@ -24,7 +24,7 @@ class Database:
     def createDatabase(self):
         with DbSupervisor.connection.cursor() as cursor:
             try:
-                if DbSupervisor.checkIfDatabaseExists(self.db_name):
+                if DbSupervisor.databaseExists(self.db_name):
                     self.dropDatabase()
                 cursor.execute(Query.createDatabase(self.db_name))
                 # use database
@@ -32,6 +32,7 @@ class Database:
                 print('Database', self.db_name, 'succesfully created')
             except:
                 sys.exit('FATAL ERROR: Unable to create database', dbName)
+        return self
 
     def dropDatabase(self):
         with DbSupervisor.connection.cursor() as cursor:

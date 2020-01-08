@@ -1,12 +1,19 @@
 from dataset import *
 from supervisor import *
 
-DbSupervisor.establishConnection()
+DbSupervisor.establishMySqlConnection()
 
-ds1 = US500('spy')
-ds2 = DAX30('dax')
-ds3 = FTSE100('ftse')
-ds4 = WIG20('wig20')
+datasets = [
+    US500('spy'),
+    DAX30('dax'),
+    FTSE100('ftse'),
+    WIG20('wig')
+]
 
-# ds1.fill()
-# ds1.update()
+for ds in datasets:
+    # print(ds.getName())
+    ds.use()
+    # ds.create()
+    # ds.fill()
+    # ds.update()
+
