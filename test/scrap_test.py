@@ -1,4 +1,9 @@
-from src import scrap
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+
+import scrap
 
 def test_scrap_us500():
     result = scrap.scrap_us500()
