@@ -8,7 +8,7 @@ class DbSupervisor:
     connection = None
 
     @staticmethod
-    def establishConnection():
+    def establishMySqlConnection():
         try:
             start = time.time()
             connection = pymysql.connect(host='localhost', user='admin', password='admin')
@@ -31,10 +31,6 @@ class DbSupervisor:
             sys.exit('FATAL ERROR: Unable to connect to database', dbName)
 
     @staticmethod
-    def checkIfDatabaseExists(dbName):
-        try:
-            with DbSupervisor.connection.cursor() as cursor:
-                return cursor.execute(Query.checkIfDatabaseExists(dbName))
-        except:
-            DbSupervisor.connection.close()
-            sys.exit('FATAL ERROR: Unable to perform simple query')
+    def databaseExists(dbName):
+        with DbSupervisor.connection.cursor() as cursor:
+            return cursor.execute(Query.checkIfDatabaseExists(dbName))
