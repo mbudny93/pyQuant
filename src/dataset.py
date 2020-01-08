@@ -48,11 +48,20 @@ class Dataset:
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    def use(self):
+        if DbSupervisor.databaseExists(self.getName()):
+            print(self.getName(), 'dataset exists. What to do?')
+        else:
+            print(self.getName(), 'Initializing dataset ', self.getName(), ' ...')
+
     def remove(self):
         self.database.dropDatabase()
 
     def getInfo(self):
         pass
+
+    def getName(self):
+        return self.name
 
     def createVendor(self):
         raise NotImplementedError()

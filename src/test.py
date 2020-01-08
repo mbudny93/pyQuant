@@ -1,7 +1,7 @@
 from dataset import *
 from supervisor import *
 
-DbSupervisor.establishConnection()
+DbSupervisor.establishMySqlConnection()
 
 datasets = [
     US500('spy'),
@@ -11,7 +11,9 @@ datasets = [
 ]
 
 for ds in datasets:
-    ds.create()
-    ds.fill()
-    ds.update()
+    # print(ds.getName())
+    ds.use()
+    # ds.create()
+    # ds.fill()
+    # ds.update()
 
