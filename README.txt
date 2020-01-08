@@ -1,11 +1,3 @@
-REQUIREMENTS:
-Python 3.6.8
-pandas==0.25.0
-PyMySQL==0.9.3
-lxml=4.4.1
-pandas-datareader==0.7.4
-matplotlib==3.1.1
-
 INSTALL DB:
 sudo apt-get remove mariadb*
 sudo apt-get install mariadb-server -y
