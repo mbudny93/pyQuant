@@ -1,4 +1,3 @@
 {
-  "scrap_test.py::test_us500": true,
-  "vendor_test.py::test_quotemedia_vendor_connectivity": true
+  "scrap_test.py::test_us500": true
 }
