@@ -27,8 +27,8 @@ class DbSupervisor:
                 cursor.execute(Query.useDatabase(dbName))
                 end = time.time()
                 print('Successfully connected to database', dbName, 'in', end-start, 'seconds')
-        except:
-            sys.exit('FATAL ERROR: Unable to connect to database', dbName)
+        except(pymysql.err.InternalError):
+             raise pymysql.err.InternalError
 
     @staticmethod
     def databaseExists(dbName):
