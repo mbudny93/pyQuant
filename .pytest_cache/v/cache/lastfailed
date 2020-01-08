@@ -1,3 +1,11 @@
 {
-  "test/scrap_test.py::test_us500": true
+  "test/database_test.py": true,
+  "test/scrap_test.py": true,
+  "test/scrap_test.py::test_scrap_dax": true,
+  "test/scrap_test.py::test_scrap_ftse100": true,
+  "test/scrap_test.py::test_scrap_us500": true,
+  "test/scrap_test.py::test_scrap_wig20": true,
+  "test/scrap_test.py::test_us500": true,
+  "test/vendor_test.py": true,
+  "test/vendor_test.py::test_quotemedia_vendor_connectivity": true
 }

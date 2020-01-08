@@ -1,3 +1,6 @@
 {
-  "scrap_test.py::test_us500": true
+  "database_test.py::test_connect_to_database": true,
+  "scrap_test.py": true,
+  "scrap_test.py::test_us500": true,
+  "vendor_test.py": true
 }
