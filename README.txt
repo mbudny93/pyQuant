@@ -2,9 +2,11 @@
 INSTALL mysql on ARCHLINUX
 ----------------------------------------------------------------------------------------------------
 sudo pacman -S mariadb
-no-password installation: sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+no-password installation:
+    sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 sudo systemctl start mariadb
-sudo mysql -u root < create_db_user.sql
+cd ~/pyQuant
+sudo mysql -u root < ./utils/create_db_user.sql
 log in to mysql: sudo mysql -u root
 ----------------------------------------------------------------------------------------------------
 UNINSTALL mysql on ARCHLINUX
