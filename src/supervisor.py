@@ -1,5 +1,6 @@
 import time
 import pymysql
+import sys
 
 from query import Query
 
@@ -13,10 +14,9 @@ class DbSupervisor:
             start = time.time()
             connection = pymysql.connect(host='localhost', user='admin', password='admin')
             end = time.time()
-            print('Succesfully connected to local database in', end-start, 'seconds.')
             DbSupervisor.connection = connection
+            print('Succesfully connected to local database in', end-start, 'seconds.')
         except:
-            DbSupervisor.connection.close()
             sys.exit('FATAL ERROR: Unable to connect to local database.')
 
     @staticmethod
