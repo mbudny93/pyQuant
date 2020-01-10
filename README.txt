@@ -19,21 +19,23 @@ sudo rm -rf /var/lib/mysql
 INSTALL mysql on ubuntu:
 ----------------------------------------------------------------------------------------------------
 sudo apt-get install mariadb-server -y
-sudo mysql_secure_installation
-sudo mysql -u root -p < create_db_user.sql
-
+unsecure: sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+secure:   sudo mysql_secure_installation
+cd ~/pyQuant
+sudo mysql -u root < ./utils/create_db_user.sql
+log in to mysql: sudo mysql -u root
 ----------------------------------------------------------------------------------------------------
-UNINSTALL mysql:
+UNINSTALL mysql on ubuntu:
 ----------------------------------------------------------------------------------------------------
-arch:
-    # systemctl stop mariadb
-    sudo pacman -R mariadb
-    sudo pacman -R mariadb-clients
-    sudo rm -rf /var/lib/mysql
-ubuntu:
-    sudo apt-get remove mariadb*
+sudo apt-get remove mariadb*
+sudo rm -rf /var/lib/mysql
 ----------------------------------------------------------------------------------------------------
-
+INSTALL PYTHON PACKAGES:
+----------------------------------------------------------------------------------------------------
+python -m venv /tmp/pyQuant_venv
+source /tmp/pyQuant_venv/bin/activate
+pip install -r requirements.txt
+----------------------------------------------------------------------------------------------------
 DB UTILS:
 ----------------------------------------------------------------------------------------------------
 CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
@@ -42,13 +44,9 @@ GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
 FLUSH PRIVILEGES;
 SHOW GRANTS FOR 'admin'@localhost;
 exit;
-
+----------------------------------------------------------------------------------------------------
+MISC:
+----------------------------------------------------------------------------------------------------
 select * from symbol;
 
-----------------------------------------------------------------------------------------------------
-INSTALL PYTHON PACKAGES:
-----------------------------------------------------------------------------------------------------
-python -m venv /tmp/pyQuant_venv
-source /tmp/pyQuant_venv/bin/activate
-pip install -r requirements.txt
 
