@@ -108,3 +108,10 @@ class WIG20(Dataset):
 
     def createVendor(self):
         return Quotemedia()
+
+datasets = [
+    US500('spy'),
+    DAX30('dax'),
+    FTSE100('ftse'),
+    WIG20('wig')
+]

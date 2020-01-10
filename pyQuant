@@ -8,47 +8,33 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/src")
 
 from dataset import *
 from supervisor import *
+from handler import Handler
 
 parser = argparse.ArgumentParser()
+group = parser.add_mutually_exclusive_group()
+group.add_argument('--init', action='store_true', help ="Initialize all available datasets")
+group.add_argument('--purge', action='store_true', help ="Remove all datasets and databases")
+group.add_argument('-c', '--create', nargs='+', help ="Create specified dataset(s)")
+group.add_argument('-r', '--remove', nargs='+', help ="Remove specified dataset(s)")
+group.add_argument('-f', '--fill',   nargs='+', help ="Fetch historical quotes")
+group.add_argument('-u', '--update', nargs='+', help ="Update dataset with newest quotes")
 
-parser.add_argument('-c', '--create', action='store_true',
-        help ="Create dataset")
-parser.add_argument('-f', '--fill', action='store_true',
-        help ="Fetch historical quotes")
-parser.add_argument('-u', '--update', action='store_true',
-        help ="Update dataset with newest quotes")
+if len(sys.argv) == 1:
+    parser.print_help()
+    sys.exit(1)
 
 args = parser.parse_args()
-
-if args.create:
-    sys.exit('FATAL')
-
-#=======================================================================================
-
 DbSupervisor.establishMySqlConnection()
 
-datasets = [
-    US500('spy'),
-    DAX30('dax'),
-    FTSE100('ftse'),
-    WIG20('wig')
-]
-
-print('Handled datasets:')
-for ds in datasets:
-    print(ds.getName())
-
-if args.create:
-    print("This is some output")
+if args.init:
+    Handler.init()
+elif args.purge:
+    Handler.purge()
+elif args.create:
+    Handler.create(args.create)
+elif args.remove:
+    Handler.remove(ags.remove)
 elif args.fill:
-    print("This is some toutput")
+    Handler.fill(args.fill)
 elif args.update:
-    print("This is some noutput")
-
-#for ds in datasets:
-    # print(ds.getName())
-    # ds.use()
-    # ds.create()
-    # ds.fill()
-    # ds.update()
-
+    Handler.update(args.update)
