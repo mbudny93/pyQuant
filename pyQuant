@@ -18,23 +18,34 @@ group.add_argument('-c', '--create', nargs='+', help ="Create specified dataset(
 group.add_argument('-r', '--remove', nargs='+', help ="Remove specified dataset(s)")
 group.add_argument('-f', '--fill',   nargs='+', help ="Fetch historical quotes")
 group.add_argument('-u', '--update', nargs='+', help ="Update dataset with newest quotes")
+group.add_argument('--dblist', action='store_true', help ="Show databases")
+group.add_argument('--sqlstatus', action='store_true', help ="Show sql status")
+group.add_argument('--sqlusers', action='store_true', help ="Show sql users")
 
 if len(sys.argv) == 1:
     parser.print_help()
     sys.exit(1)
 
 args = parser.parse_args()
+
 DbSupervisor.establishMySqlConnection()
+handler = Handler()
 
 if args.init:
-    Handler.init()
+    handler.init()
 elif args.purge:
-    Handler.purge()
+    handler.purge()
 elif args.create:
-    Handler.create(args.create)
+    handler.create(args.create)
 elif args.remove:
-    Handler.remove(ags.remove)
+    handler.remove(ags.remove)
 elif args.fill:
-    Handler.fill(args.fill)
+    handler.fill(args.fill)
 elif args.update:
-    Handler.update(args.update)
+    handler.update(args.update)
+elif args.dblist:
+    handler.dblist()
+elif args.sqlstatus:
+    handler.sqlstatus()
+elif args.sqlusers:
+    handler.sqlusers()

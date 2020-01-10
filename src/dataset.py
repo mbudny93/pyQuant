@@ -55,7 +55,8 @@ class Dataset:
             print(self.getName(), 'Initializing dataset ', self.getName(), ' ...')
 
     def remove(self):
-        self.database.dropDatabase()
+        if DbSupervisor.databaseExists(self.getName()):
+            self.database.dropDatabase()
 
     def getInfo(self):
         pass
@@ -109,9 +110,3 @@ class WIG20(Dataset):
     def createVendor(self):
         return Quotemedia()
 
-datasets = [
-    US500('spy'),
-    DAX30('dax'),
-    FTSE100('ftse'),
-    WIG20('wig')
-]
