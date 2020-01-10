@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ -d /tmp/pyQuant_venv ]]
+then
+    source /tmp/pyQuant_venv/bin/activate
+else
+    python -m venv /tmp/pyQuant_venv
+    source /tmp/pyQuant_venv/bin/activate
+    pip install -r requirements.txt
+    deactivate
+    source /tmp/pyQuant_venv/bin/activate
+fi
