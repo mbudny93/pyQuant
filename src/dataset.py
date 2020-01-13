@@ -21,6 +21,15 @@ class Dataset:
     def __init__(self, name):
         self.name = name
 
+    def __eq__(self, other):
+        if other is None:
+            return False
+        return (self.name == other.name and
+               self.database == other.database and
+               self.updater == other.updater and
+               self.tickers == other.tickers)
+
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create(self):
         print('Initializing new dataset ...')

@@ -11,14 +11,6 @@ class Controller:
     def __init__(self):
         print('Main controller created')
 
-    def generateDatasets(self):
-        self.datasets = [
-            US500('spy'),
-            DAX30('dax'),
-            FTSE100('ftse'),
-            WIG20('wig')
-        ]
-
     def saveDatasets(self):
         for ds in self.datasets:
             file_name = self.dump_dir + ds.getName() + '.pickle'
@@ -37,10 +29,3 @@ class Controller:
                 loaded_obj = pickle.load(f)
                 deserialized_datasets.append(loaded_obj)
         return deserialized_datasets
-
-
-        # for ds in self.datasets:
-            # file_name = '../.dump/' + ds.getName() + '.pickle'
-            # with open(file_name) as file:
-                # loaded_obj = pickle.load(file)
-

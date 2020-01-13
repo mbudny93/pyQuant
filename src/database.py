@@ -18,6 +18,15 @@ class Database:
         self.symbol_table_name = 'symbol'
         self.price_table_name = 'daily_price'
 
+    def __eq__(self, other):
+        if other is None:
+            return False
+        return (self.db_name == other.db_name and
+               self.symbol_table_name == other.symbol_table_name and
+               self.price_table_name == other.price_table_name and
+               self.tickers == other.tickers and
+               self.dataVendor == other.dataVendor)
+
     def setVendor(self, vendor):
         self.dataVendor = vendor
 

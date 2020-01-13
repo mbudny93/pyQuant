@@ -9,13 +9,11 @@ from controller import *
 test_main_dir = os.path.dirname(os.path.realpath(__file__))
 test_dump_dir = test_main_dir + '/.dump/'
 
-
 def clean_dump_dir():
     if os.path.exists(test_dump_dir):
         shutil.rmtree(test_dump_dir)
     os.makedirs(test_dump_dir)
     assert not (os.listdir(test_dump_dir))
-
 
 def test_serialize_datasets():
     clean_dump_dir()
@@ -37,4 +35,7 @@ def test_deserialize_datasets():
     controller.datasets =  [ US500('spy'), DAX30('dax'), FTSE100('ftse'), WIG20('wig') ]
     controller.saveDatasets()
     result = controller.loadDatasets()
-    assert(result == controller.datasets)
+
+    assert(len(result) == len(controller.datasets))
+    assert(sorted(result, key=lambda x: x.name == sorted(controller.datasets, key=lambda x: x.name))
+)
