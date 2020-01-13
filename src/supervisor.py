@@ -34,3 +34,4 @@ class DbSupervisor:
     def databaseExists(dbName):
         with DbSupervisor.connection.cursor() as cursor:
             return cursor.execute(Query.checkIfDatabaseExists(dbName))
+
