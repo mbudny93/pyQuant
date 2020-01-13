@@ -1,47 +1,58 @@
 from supervisor import DbSupervisor
+from controller import Controller
 from dataset import *
+
+import sys
+import shutil
 
 class Handler:
 
-    def __init__(self):
-        self.datasets_ = [
-            US500('spy'),
-            DAX30('dax'),
-            FTSE100('ftse'),
-            WIG20('wig')
-        ]
-
-    def init(self):
+    @staticmethod
+    def init():
         print('Inside init')
-        for ds in self.datasets_:
+        if Controller.datasets:
+            sys.exit('Existing datasets detected, use --purge.')
+        print('No datasets detected, initializing default datasets...')
+        Controller.generateDatasets()
+        for ds in Controller.datasets:
             ds.create()
+        Controller.saveDatasets()
 
-    def purge(self):
+    @staticmethod
+    def purge():
         print('Inside purge')
-        for ds in self.datasets_:
+        for ds in Controller.datasets:
             print(ds.getName())
             ds.remove()
+        Controller.datasets = []
+        Controller.purgeDatasets()
+        shutil.rmtree(Controller.dump_dir)
 
-    def create(self, params):
+    @staticmethod
+    def create(params):
         print('Inside create')
         if len(params) == 1 and params[0] == '*':
             print('allhu akbar!')
         for x in params:
             print(x)
 
-    def remove(self, params):
+    @staticmethod
+    def remove(params):
         print('Inside remove')
         print(params)
 
-    def fill(self, params):
+    @staticmethod
+    def fill(params):
         print('Inside fill')
         print(params)
 
-    def update(self, params):
+    @staticmethod
+    def update(params):
         print('Inside update')
         print(params)
 
-    def dblist(self):
+    @staticmethod
+    def dblist():
         print('Inside dblist')
         with DbSupervisor.connection.cursor() as cursor:
             cursor.execute('show databases;')
@@ -49,7 +60,8 @@ class Handler:
             for res in result:
                 print(res)
 
-    def sqlstatus(self):
+    @staticmethod
+    def sqlstatus():
         print('Inside sqlstatus')
         with DbSupervisor.connection.cursor() as cursor:
             cursor.execute('status;')
@@ -57,7 +69,8 @@ class Handler:
             for res in result:
                 print(res)
 
-    def sqlusers(self):
+    @staticmethod
+    def sqlusers():
         print('Inside sqlusers')
         with DbSupervisor.connection.cursor() as cursor:
             cursor.execute('select user from mysql.user;')

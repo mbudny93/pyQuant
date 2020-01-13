@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 from controller import *
 
 test_main_dir = os.path.dirname(os.path.realpath(__file__))
-test_dump_dir = test_main_dir + '/.dump/'
+test_dump_dir = test_main_dir + '/.dump'
 
 def clean_dump_dir():
     if os.path.exists(test_dump_dir):

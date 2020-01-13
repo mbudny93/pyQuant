@@ -4,28 +4,47 @@ import os
 
 class Controller:
 
-    datasets = None
-    main_dir = None
-    dump_dir = None
+    datasets = []
+    main_dir = ''
+    dump_dir = ''
 
-    def __init__(self):
-        print('Main controller created')
+    @staticmethod
+    def setProjectDirs(m_dir, d_dir):
+        Controller.main_dir = m_dir
+        Controller.dump_dir = d_dir
 
-    def saveDatasets(self):
-        for ds in self.datasets:
-            file_name = self.dump_dir + ds.getName() + '.pickle'
+    @staticmethod
+    def generateDatasets():
+        default_datasets = [
+            US500('spy'),
+            DAX30('dax'),
+            FTSE100('ftse'),
+            WIG20('wig')
+        ]
+        Controller.datasets = default_datasets
+
+    @staticmethod
+    def saveDatasets():
+        for ds in Controller.datasets:
+            file_name = Controller.dump_dir + '/' + ds.getName() + '.pickle'
+            print(file_name)
             with open(file_name, 'wb') as file:
                 pickle.dump(ds, file)
 
-    def loadDatasets(self):
-        print('LOADING DATASETS.............................')
+    @staticmethod
+    def purgeDatasets():
+        for ds in Controller.datasets:
+            pass
+
+    @staticmethod
+    def loadDatasets():
+        print('LOADING DATASETS...')
         deserialized_datasets = []
-        dump_files = os.listdir(self.dump_dir)
-        print(dump_files)
+        dump_files = os.listdir(Controller.dump_dir)
         for file in dump_files:
-            file_name = self.dump_dir + '/' + file
-            print(file_name)
+            file_name = Controller.dump_dir + '/' + file
             with open(file_name, 'rb') as f:
                 loaded_obj = pickle.load(f)
                 deserialized_datasets.append(loaded_obj)
-        return deserialized_datasets
+        print('Found: ' + str(len(deserialized_datasets)) + ' datasets...')
+        Controller.datasets = deserialized_datasets

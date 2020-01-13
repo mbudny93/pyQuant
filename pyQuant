@@ -9,6 +9,7 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/src")
 from dataset import *
 from supervisor import *
 from handler import Handler
+from controller import Controller
 
 parser = argparse.ArgumentParser()
 group = parser.add_mutually_exclusive_group()
@@ -28,38 +29,33 @@ if len(sys.argv) == 1:
 
 args = parser.parse_args()
 
-DbSupervisor.establishMySqlConnection()
-handler = Handler()
-
 main_dir = os.path.dirname(os.path.realpath(__file__))
 dump_dir = main_dir + '/.dump'
 
 if not os.path.exists(dump_dir):
     os.makedirs(dump_dir)
 
-controller = Controller()
-controller.main_dir = main_dir
-controller.dump_dir = dump_dir
-print(controller.main_dir)
-print(controller.dump_dir)
+#---------------------------------------
 
-controller.loadDatasets()
+DbSupervisor.establishMySqlConnection()
+Controller.setProjectDirs(main_dir, dump_dir)
+Controller.loadDatasets()
 
 if args.init:
-    handler.init()
+    Handler.init()
 elif args.purge:
-    handler.purge()
+    Handler.purge()
 elif args.create:
-    handler.create(args.create)
+    Handler.create(args.create)
 elif args.remove:
-    handler.remove(ags.remove)
+    Handler.remove(ags.remove)
 elif args.fill:
-    handler.fill(args.fill)
+    Handler.fill(args.fill)
 elif args.update:
-    handler.update(args.update)
+    Handler.update(args.update)
 elif args.dblist:
-    handler.dblist()
+    Handler.dblist()
 elif args.sqlstatus:
-    handler.sqlstatus()
+    Handler.sqlstatus()
 elif args.sqlusers:
-    handler.sqlusers()
+    Handler.sqlusers()
