@@ -30,10 +30,11 @@ class Controller:
         deserialized_datasets = []
         dump_files = os.listdir(self.dump_dir)
         print(dump_files)
-        for file_name in dump_files:
+        for file in dump_files:
+            file_name = self.dump_dir + '/' + file
             print(file_name)
-            with open(file_name) as file:
-                loaded_obj = pickle.load(file)
+            with open(file_name, 'rb') as f:
+                loaded_obj = pickle.load(f)
                 deserialized_datasets.append(loaded_obj)
         return deserialized_datasets
 

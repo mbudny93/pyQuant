@@ -37,3 +37,4 @@ def test_deserialize_datasets():
     controller.datasets =  [ US500('spy'), DAX30('dax'), FTSE100('ftse'), WIG20('wig') ]
     controller.saveDatasets()
     result = controller.loadDatasets()
+    assert(result == controller.datasets)
